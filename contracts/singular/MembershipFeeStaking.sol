@@ -55,6 +55,12 @@ contract MembershipFeeStaking {
         )
         public
         {
+
+        require(
+            SGTtoken.transferFrom(msg.sender, address(this), _amount),
+            "Token staking: Can`t transfer tokens to staking address"
+        );
+
         require(_amount > 0, "locking amount should be > 0");
         require(_period >= minLockingPeriod, "locking period should be >= minLockingPeriod");
 
