@@ -38,7 +38,7 @@ contract MembershipFeeStaking {
         amount = locker.amount;
         locker.amount = 0;
         // solhint-disable-next-line not-rely-on-time
-        require(block.timestamp > locker.releaseTime, "check the lock period pass");
+        require(now > locker.releaseTime, "check the lock period pass");
 
         emit Release(_beneficiary, amount);
     }
@@ -64,11 +64,22 @@ contract MembershipFeeStaking {
         require(_amount > 0, "locking amount should be > 0");
         require(_period >= minLockingPeriod, "locking period should be >= minLockingPeriod");
 
-        Locker storage locker = lockers[msg.sender];
-        locker.amount = _amount;
+        if (lockers[msg.sender].amount > 0) {
+            lockers[msg.sender].amount += _amount;
 
-        // solhint-disable-next-line not-rely-on-time
-        locker.releaseTime = now + _period;
+            // if new period is > than previous set it, else left previous
+            if (now + _period > lockers[msg.sender].releaseTime) {
+                lockers[msg.sender].releaseTime = now + _period;
+            }
+
+        } else {
+            Locker storage locker = lockers[msg.sender];
+            locker.amount = _amount;
+
+            // solhint-disable-next-line not-rely-on-time
+            locker.releaseTime = now + _period;
+        }
+        
 
         totalLocked = totalLocked.add(_amount); 
         emit Lock(msg.sender, _amount, _period);
