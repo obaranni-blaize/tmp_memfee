@@ -78,7 +78,7 @@ contract("MembershipFeeStakingContract", async accounts => {
 
         // console.log(totalLocked.toNumber(), "\n\n***\n\n", lockers.amount.toNumber(), lockers.releaseTime.toNumber(), stakingTime + currentTime)
         
-
+        // todo: add balances check 
         console.log("BLNCS: ", await SGTtokenContractInstance.balanceOf(accounts[1]), await SGTtokenContractInstance.balanceOf(MemFeeContractInstance.address));
 
 
